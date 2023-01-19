@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-undef */
 import { List } from './list'
-import { SearchPanel } from './search-panel'
+import { SearchPanel, SearchPanelProps } from './search-panel'
 import { useState, useEffect } from 'react'
 import { cleanObject } from 'utils'
 import qs from 'qs'
+import React from 'react'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
@@ -15,7 +17,7 @@ export const ProjectListScreen = () => {
 
   const [users, setUsers] = useState([])
   const [list, setList] = useState([])
-  const debounceParam = useDebounce(param, 2000)
+  const debounceParam = useDebounce(param, 200)
 
   useEffect(() => {
     fetch(
@@ -49,14 +51,18 @@ export const ProjectListScreen = () => {
   )
 }
 
-export const useMount = (callback) => {
+export const useMount = (callback: () => void) => {
   useEffect(() => {
     callback()
   }, [])
 }
 
-export const useDebounce = (value, delay) => {
-  const [debounceValue, setDebouncedValue] = useState([])
+//后面用泛型
+export const useDebounce = (
+  value: unknown,
+  delay?: number,
+): any => {
+  const [debounceValue, setDebouncedValue] = useState(value)
 
   useEffect(() => {
     const timeout = setTimeout(

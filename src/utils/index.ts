@@ -1,4 +1,4 @@
-export const cleanObject = (object) => {
+export const cleanObject = (object: any) => {
   const result = { ...object }
   Object.keys(result).forEach((key) => {
     const value = result[key]
@@ -9,4 +9,5 @@ export const cleanObject = (object) => {
   return result
 }
 
-export const isFalsey = (value) => (value === 0 ? false : !value)
+export const isFalsey = (value: any) =>
+  value === 0 ? false : !value
