@@ -1,25 +1,10 @@
-import React, { FormEvent } from 'react'
+import { useAuth } from 'context/auth-context'
+import React from 'react'
+import { FormEvent } from 'react'
 
-const apiUrl = process.env.REACT_APP_API_URL
+export const LoginScreen = () => {
+  const { login } = useAuth()
 
-export const Login = () => {
-  const login = (param: {
-    username: string
-    password: string
-  }) => {
-    fetch(`${apiUrl}/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(param),
-    }).then(async (response) => {
-      if (response.ok) {
-      }
-    })
-  }
-  //HTMLFormElement extends Element
-  //鸭子类型（duck typing）：面向接口编程 而不是对象编程
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const username = (
@@ -41,7 +26,7 @@ export const Login = () => {
         <label htmlFor="password">密码 </label>
         <input type="password" id={'password'} />
       </div>
-      <button type="submit">注册</button>
+      <button type="submit">登录</button>
     </form>
   )
 }
