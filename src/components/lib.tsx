@@ -38,7 +38,7 @@ export const FullPageLoading = () => (
   </FullPage>
 )
 
-export const FullPageErrorFeedback = ({
+export const FullPageErrorFallback = ({
   error,
 }: {
   error: Error | null

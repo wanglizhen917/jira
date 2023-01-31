@@ -10,7 +10,7 @@ import { http } from 'utils/http'
 import { useMount } from 'screens/project-list'
 import { useAsync } from 'utils/use-async'
 import {
-  FullPageErrorFeedback,
+  FullPageErrorFallback,
   FullPageLoading,
 } from 'components/lib'
 
@@ -72,7 +72,7 @@ export const AuthProvider = ({
   }
 
   if (isError) {
-    return <FullPageErrorFeedback error={error} />
+    return <FullPageErrorFallback error={error} />
   }
   return (
     <AuthContext.Provider
