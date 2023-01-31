@@ -1,14 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-undef */
-import { List } from './list'
-import { SearchPanel, SearchPanelProps } from './search-panel'
+import { List, Project } from './list'
+import { SearchPanel } from './search-panel'
 import { useState, useEffect } from 'react'
 import { cleanObject } from 'utils'
-import qs from 'qs'
 import React from 'react'
 import { useHttp } from 'utils/http'
-
-const apiUrl = process.env.REACT_APP_API_URL
+import styled from '@emotion/styled'
+import { useAsync } from 'utils/use-async'
+import { Typography } from 'antd'
+import { useProjects } from 'utils/project'
+import { useUsers } from 'utils/user'
 
 export const ProjectListScreen = () => {
   const [param, setParam] = useState({
@@ -16,36 +16,47 @@ export const ProjectListScreen = () => {
     personId: '',
   })
 
-  const [users, setUsers] = useState([])
-  const [list, setList] = useState([])
   const debounceParam = useDebounce(param, 200)
   const client = useHttp()
+  const {
+    isLoading,
+    error,
+    data: list,
+  } = useProjects(debounceParam)
 
-  useEffect(() => {
-    client('projects', {
-      data: cleanObject(debounceParam),
-    }).then(setList)
-  }, [debounceParam])
-
-  useMount(() => {
-    client('users').then(setUsers)
-  })
+  const { data: users } = useUsers()
 
   return (
-    <div>
+    <Container>
+      <h1>项目列表</h1>
       <SearchPanel
-        users={users}
+        users={users || []}
         param={param}
         setParam={setParam}
       />
-      <List users={users} list={list} />
-    </div>
+      {error ? (
+        <Typography.Text type={'danger'}>
+          {error.message}
+        </Typography.Text>
+      ) : null}
+      <List
+        loading={isLoading}
+        users={users || []}
+        dataSource={list || []}
+      />
+    </Container>
   )
 }
+
+const Container = styled.div`
+  padding: 3.2rem;
+`
 
 export const useMount = (callback: () => void) => {
   useEffect(() => {
     callback()
+    //TODO 依赖项里加上callback会造成无限循环，这个和useCallback以及useMemo有关
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }
 

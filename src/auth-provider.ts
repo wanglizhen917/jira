@@ -25,7 +25,7 @@ export const login = async (data: {
   if (response.ok) {
     return handleUserResponse(await response.json())
   }
-  return await Promise.reject(data)
+  return await Promise.reject(await response.json())
 }
 
 export const register = async (data: {
@@ -42,7 +42,7 @@ export const register = async (data: {
   if (response.ok) {
     return handleUserResponse(await response.json())
   }
-  return await Promise.reject(data)
+  return await Promise.reject(await response.json())
 }
 
 export const logout = async () =>
