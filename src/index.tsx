@@ -4,13 +4,24 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { loadDevTools } from 'jira-dev-tool'
+import 'antd/dist/reset.css'
 import { AppProviders } from 'context'
+import { ConfigProvider } from 'antd'
 
 loadDevTools(() =>
   ReactDOM.render(
     <React.StrictMode>
       <AppProviders>
-        <App />
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#0052cc',
+              fontSize: 16,
+            },
+          }}
+        >
+          <App />
+        </ConfigProvider>
       </AppProviders>
     </React.StrictMode>,
     document.getElementById('root'),
