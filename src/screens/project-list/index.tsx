@@ -1,7 +1,7 @@
 import { List, Project } from './list'
 import { SearchPanel } from './search-panel'
 import { useState, useEffect } from 'react'
-import { cleanObject } from 'utils'
+import { cleanObject, useDocumentTitle } from 'utils'
 import React from 'react'
 import { useHttp } from 'utils/http'
 import styled from '@emotion/styled'
@@ -17,7 +17,6 @@ export const ProjectListScreen = () => {
   })
 
   const debounceParam = useDebounce(param, 200)
-  const client = useHttp()
   const {
     isLoading,
     error,
@@ -25,6 +24,8 @@ export const ProjectListScreen = () => {
   } = useProjects(debounceParam)
 
   const { data: users } = useUsers()
+
+  useDocumentTitle('项目列表')
 
   return (
     <Container>

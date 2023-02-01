@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 export const cleanObject = (object: {
   [key: string]: unknown
 }) => {
@@ -16,3 +18,21 @@ export const isFalsey = (value: any) =>
 
 export const isVoid = (value: unknown) =>
   value === undefined || value === null || value === ''
+
+export const useDocumentTitle = (
+  title: string,
+  keepOnUnmount: boolean = true,
+) => {
+  const oldTitle = document.title
+  useEffect(() => {
+    document.title = title
+  }, [title])
+
+  useEffect(() => {
+    return () => {
+      if (!keepOnUnmount) {
+        document.title = oldTitle
+      }
+    }
+  })
+}
