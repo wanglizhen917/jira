@@ -6,6 +6,9 @@ import { ProjectListScreen } from 'screens/project-list'
 import { ReactComponent as SoftwareLogo } from 'assets/software-logo.svg'
 import { Button, Dropdown, MenuProps, Space } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
+import { Route, Routes } from 'react-router'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { ProjectScreen } from 'screens/project'
 
 /**
  * grid 和 flex 各自的应用场景
@@ -20,6 +23,29 @@ import { DownOutlined } from '@ant-design/icons'
  */
 
 export const AuthenticatedApp = () => {
+  return (
+    <Container>
+      <PageHeader />
+      <Main>
+        <Router>
+          <Routes>
+            <Route
+              path={'/projects'}
+              element={<ProjectListScreen />}
+            />
+            <Route
+              path={'/projects/:projectId/*'}
+              element={<ProjectScreen />}
+            />
+            <Route index element={<ProjectListScreen />} />
+          </Routes>
+        </Router>
+      </Main>
+    </Container>
+  )
+}
+
+const PageHeader = () => {
   const { user, logout } = useAuth()
   const items: MenuProps['items'] = [
     {
@@ -31,34 +57,30 @@ export const AuthenticatedApp = () => {
       key: '0',
     },
   ]
+
   return (
-    <Container>
-      <Header between={true}>
-        <HeaderLeft gap={true}>
-          <SoftwareLogo
-            width={'18rem'}
-            color={'reb(38,132,255)'}
-          />
-          <h2>项目</h2>
-          <h2>用户</h2>
-        </HeaderLeft>
-        <HeaderRight>
-          <Dropdown menu={{ items }}>
-            <Button
-              onClick={(e) => e.preventDefault()}
-              type={'link'}
-            >
-              <Space>
-                Hi, {user?.name} <DownOutlined />
-              </Space>
-            </Button>
-          </Dropdown>
-        </HeaderRight>
-      </Header>
-      <Main>
-        <ProjectListScreen />
-      </Main>
-    </Container>
+    <Header between={true}>
+      <HeaderLeft gap={true}>
+        <SoftwareLogo
+          width={'18rem'}
+          color={'reb(38,132,255)'}
+        />
+        <h2>项目</h2>
+        <h2>用户</h2>
+      </HeaderLeft>
+      <HeaderRight>
+        <Dropdown menu={{ items }}>
+          <Button
+            onClick={(e) => e.preventDefault()}
+            type={'link'}
+          >
+            <Space>
+              Hi, {user?.name} <DownOutlined />
+            </Space>
+          </Button>
+        </Dropdown>
+      </HeaderRight>
+    </Header>
   )
 }
 

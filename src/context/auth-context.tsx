@@ -7,12 +7,12 @@ import React, {
 import * as auth from 'auth-provider'
 import { User } from 'screens/project-list/search-panel'
 import { http } from 'utils/http'
-import { useMount } from 'screens/project-list'
 import { useAsync } from 'utils/use-async'
 import {
   FullPageErrorFallback,
   FullPageLoading,
 } from 'components/lib'
+import { useMount } from 'utils'
 
 interface AuthForm {
   username: string
