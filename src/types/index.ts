@@ -1,1 +1,1 @@
-export type Row = string | number
+export type Raw = string | number
