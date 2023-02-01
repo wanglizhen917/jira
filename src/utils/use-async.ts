@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 interface State<D> {
   error: Error | null
@@ -26,6 +26,9 @@ export const useAsync = <D>(
     ...initialState,
   })
 
+  //useState直接传入函数的含义是：惰性初始化；所以，要用useState保存函数，不能直接传入函数()=>{}，而是要()=>()=>{}
+  const [retry, setRetry] = useState(() => () => {})
+
   const setData = (data: D) =>
     setState({
       data,
@@ -40,11 +43,16 @@ export const useAsync = <D>(
       data: null,
     })
 
-  const run = async (promise: Promise<D>) => {
+  const run = async (
+    promise: Promise<D>,
+    runConfig?: { retry: () => Promise<D> },
+  ) => {
     if (!promise || !promise.then) {
       throw new Error('请传入 Promise 类型数据')
     }
-
+    setRetry(() => () => {
+      if (runConfig?.retry) run(runConfig?.retry(), runConfig)
+    })
     setState({ ...state, stat: 'loading' })
     return promise
       .then((data) => {
@@ -64,6 +72,7 @@ export const useAsync = <D>(
     isError: state.stat === 'error',
     isSuccess: state.stat === 'success',
     run,
+    retry,
     setData,
     setError,
     ...state,

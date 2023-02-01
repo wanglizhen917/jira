@@ -3,7 +3,7 @@ import { SearchPanel } from './search-panel'
 import { useDebounce, useDocumentTitle } from 'utils'
 import React from 'react'
 import styled from '@emotion/styled'
-import { Typography } from 'antd'
+import { Button, Typography } from 'antd'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
 import { useProjectsSearchParams } from './util'
@@ -14,6 +14,7 @@ export const ProjectListScreen = () => {
     isLoading,
     error,
     data: list,
+    retry,
   } = useProjects(useDebounce(param, 200))
 
   const { data: users } = useUsers()
@@ -34,6 +35,7 @@ export const ProjectListScreen = () => {
         </Typography.Text>
       ) : null}
       <List
+        refresh={retry}
         loading={isLoading}
         users={users || []}
         dataSource={list || []}
