@@ -1,4 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+export const isFalsey = (value: any) =>
+  value === 0 ? false : !value
+
+export const isVoid = (value: unknown) =>
+  value === undefined || value === null || value === ''
 
 export const cleanObject = (object: {
   [key: string]: unknown
@@ -13,17 +19,47 @@ export const cleanObject = (object: {
   return result
 }
 
-export const isFalsey = (value: any) =>
-  value === 0 ? false : !value
+export const useMount = (callback: () => void) => {
+  useEffect(() => {
+    callback()
+    //TODO 依赖项里加上callback会造成无限循环，这个和useCallback以及useMemo有关
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+}
 
-export const isVoid = (value: unknown) =>
-  value === undefined || value === null || value === ''
+// debounce 原理讲解：
+// 0s ---------> 1s ---------> 2s --------> ...
+//     一定要理解：这三个函数都是同步操作，所以它们都是在 0~1s 这个时间段内瞬间完成的；
+//     log()#1 // timeout#1
+//     log()#2 // 发现 timeout#1！取消之，然后设置timeout#2
+//     log()#3 // 发现 timeout#2! 取消之，然后设置timeout#3
+//             // 所以，log()#3 结束后，就只剩timeout#3在独自等待了
+
+// 后面用泛型来规范类型
+export const useDebounce = <V>(value: V, delay?: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    // 每次在value变化以后，设置一个定时器
+    const timeout = setTimeout(
+      () => setDebouncedValue(value),
+      delay,
+    )
+    // 每次在上一个useEffect处理完以后再运行
+    return () => clearTimeout(timeout)
+  }, [value, delay])
+
+  return debouncedValue
+}
 
 export const useDocumentTitle = (
   title: string,
   keepOnUnmount: boolean = true,
 ) => {
-  const oldTitle = document.title
+  const oldTitle = useRef(document.title).current
+  //页面加载时: 旧title
+  //加载后： 新title
+
   useEffect(() => {
     document.title = title
   }, [title])
@@ -31,8 +67,9 @@ export const useDocumentTitle = (
   useEffect(() => {
     return () => {
       if (!keepOnUnmount) {
+        //如果不指定依赖，读到的就是旧title
         document.title = oldTitle
       }
     }
-  })
+  }, [keepOnUnmount, oldTitle])
 }

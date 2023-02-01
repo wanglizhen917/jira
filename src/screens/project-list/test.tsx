@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { useMount } from '.'
+import { useMount } from 'utils'
 
 interface PersonProps {
   name: string
