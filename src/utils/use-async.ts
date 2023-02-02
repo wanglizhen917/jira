@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useMountedRef } from 'utils'
 
 interface State<D> {
@@ -32,42 +32,54 @@ export const useAsync = <D>(
   //useState直接传入函数的含义是：惰性初始化；所以，要用useState保存函数，不能直接传入函数()=>{}，而是要()=>()=>{}
   const [retry, setRetry] = useState(() => () => {})
 
-  const setData = (data: D) =>
-    setState({
-      data,
-      stat: 'success',
-      error: null,
-    })
+  const setData = useCallback(
+    (data: D) =>
+      setState({
+        data,
+        stat: 'success',
+        error: null,
+      }),
+    [],
+  )
 
-  const setError = (error: Error) =>
-    setState({
-      error: error,
-      stat: 'error',
-      data: null,
-    })
+  const setError = useCallback(
+    (error: Error) =>
+      setState({
+        error: error,
+        stat: 'error',
+        data: null,
+      }),
+    [],
+  )
 
-  const run = async (
-    promise: Promise<D>,
-    runConfig?: { retry: () => Promise<D> },
-  ) => {
-    if (!promise || !promise.then) {
-      throw new Error('请传入 Promise 类型数据')
-    }
-    setRetry(() => () => {
-      if (runConfig?.retry) run(runConfig?.retry(), runConfig)
-    })
-    setState({ ...state, stat: 'loading' })
-    return promise
-      .then((data) => {
-        if (mountedRef.current) setData(data)
-        return data
+  const run = useCallback(
+    async (
+      promise: Promise<D>,
+      runConfig?: { retry: () => Promise<D> },
+    ) => {
+      if (!promise || !promise.then) {
+        throw new Error('请传入 Promise 类型数据')
+      }
+      setRetry(() => () => {
+        if (runConfig?.retry) run(runConfig?.retry(), runConfig)
       })
-      .catch((error) => {
-        setError(error)
-        if (config.throwOnError) return Promise.reject(error)
-        return error
-      })
-  }
+
+      //会造成无限循环，因为这state改变了，依赖项里又有state，就会循环.解决办法是，不要用到state，使用函数式写法
+      //setState({ ...state, stat: 'loading' })
+      setState((prev) => ({ ...prev, stat: 'loading' }))
+      return promise
+        .then((data) => {
+          if (mountedRef.current) setData(data)
+          return data
+        })
+        .catch((error) => {
+          setError(error)
+          if (config.throwOnError) return Promise.reject(error)
+          return error
+        })
+    },
+    [config.throwOnError, mountedRef, setData, setError],
+  )
 
   return {
     isIdle: state.stat === 'idle',
