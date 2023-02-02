@@ -4,7 +4,7 @@ import { cleanObject } from 'utils'
 import { useHttp } from './http'
 import { useAsync } from './use-async'
 
-export const useProjects = (param: Partial<Project>) => {
+export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp()
 
   const { run, ...result } = useAsync<Project[]>()
@@ -12,7 +12,7 @@ export const useProjects = (param: Partial<Project>) => {
   const fetchProjects = useCallback(
     () =>
       client('projects', {
-        data: cleanObject(param),
+        data: cleanObject(param || {}),
       }),
     [client, param],
   )

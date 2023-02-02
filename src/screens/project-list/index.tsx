@@ -7,8 +7,12 @@ import { Typography } from 'antd'
 import { useProjects } from 'utils/project'
 import { useUsers } from 'utils/user'
 import { useProjectsSearchParams } from './util'
+import { Button } from 'antd/es/radio'
+import { Row } from 'components/lib'
 
-export const ProjectListScreen = () => {
+export const ProjectListScreen = (props: {
+  setProjectModalOpen: (isOpen: boolean) => void
+}) => {
   const [param, setParam] = useProjectsSearchParams()
   const {
     isLoading,
@@ -23,7 +27,13 @@ export const ProjectListScreen = () => {
 
   return (
     <Container>
-      <h1>项目列表</h1>
+      <Row between={true}>
+        <h1>项目列表</h1>
+        <Button onClick={() => props.setProjectModalOpen(true)}>
+          创建项目
+        </Button>
+      </Row>
+
       <SearchPanel
         users={users || []}
         param={param}
@@ -35,6 +45,7 @@ export const ProjectListScreen = () => {
         </Typography.Text>
       ) : null}
       <List
+        setProjectModalOpen={props.setProjectModalOpen}
         refresh={retry}
         loading={isLoading}
         users={users || []}

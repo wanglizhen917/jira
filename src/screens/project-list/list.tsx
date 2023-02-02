@@ -1,10 +1,11 @@
-import { Table, TableProps } from 'antd'
+import { Dropdown, MenuProps, Table, TableProps } from 'antd'
 import dayjs from 'dayjs'
 import React from 'react'
 import { User } from './search-panel'
 import { Link } from 'react-router-dom'
 import { Pin } from 'components/pin'
 import { useEditProject } from 'utils/project'
+import { ButtonNoPadding } from 'components/lib'
 
 export interface Project {
   id: number
@@ -18,12 +19,32 @@ export interface Project {
 interface ListProps extends TableProps<Project> {
   users: User[]
   refresh?: () => void
+  setProjectModalOpen: (isOpen: boolean) => void
 }
 
 export const List = ({ users, ...props }: ListProps) => {
   const { mutate } = useEditProject()
   const pinProject = (id: number) => (pin: boolean) =>
     mutate({ id, pin }).then(props.refresh)
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <ButtonNoPadding
+          type="link"
+          onClick={() => props.setProjectModalOpen(true)}
+        >
+          编辑
+        </ButtonNoPadding>
+      ),
+    },
+    {
+      key: '2',
+      label: <ButtonNoPadding type="link">删除</ButtonNoPadding>,
+    },
+  ]
+
   return (
     <Table
       pagination={false}
@@ -75,6 +96,17 @@ export const List = ({ users, ...props }: ListProps) => {
                   ? dayjs(project.created).format('YYYY-MM-DD')
                   : '无'}
               </span>
+            )
+          },
+        },
+        {
+          render(value, project) {
+            return (
+              <Dropdown menu={{ items }}>
+                <ButtonNoPadding type="link">
+                  ...
+                </ButtonNoPadding>
+              </Dropdown>
             )
           },
         },

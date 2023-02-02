@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Spin, Typography } from 'antd'
+import { Spin, Typography, Button } from 'antd'
 import { DevTools } from 'jira-dev-tool'
 import React from 'react'
 
@@ -50,3 +50,7 @@ export const FullPageErrorFallback = ({
     </Typography.Text>
   </FullPage>
 )
+
+export const ButtonNoPadding = styled(Button)`
+  padding: 0;
+`
