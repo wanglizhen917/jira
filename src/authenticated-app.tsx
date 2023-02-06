@@ -1,10 +1,16 @@
 import styled from '@emotion/styled'
 import { ButtonNoPadding, Row } from 'components/lib'
 import { useAuth } from 'context/auth-context'
-import React, { useState } from 'react'
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { ProjectListScreen } from 'screens/project-list'
 import { ReactComponent as SoftwareLogo } from 'assets/software-logo.svg'
-import { Button, Dropdown, MenuProps, Space } from 'antd'
+import { Button, Dropdown, Input, MenuProps, Space } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import { Route, Routes } from 'react-router'
 import { BrowserRouter as Router } from 'react-router-dom'
