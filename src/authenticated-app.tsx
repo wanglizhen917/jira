@@ -18,6 +18,8 @@ import { ProjectScreen } from 'screens/project'
 import { resetRoute } from 'utils'
 import { ProjectModal } from 'screens/project-list/project-modal'
 import { ProjectPopover } from 'screens/project-list/project-popover'
+import { useDispatch } from 'react-redux'
+import { projectListActions } from 'screens/project-list/project-list.slice'
 
 /**
  * grid 和 flex 各自的应用场景
@@ -31,47 +33,31 @@ import { ProjectPopover } from 'screens/project-list/project-popover'
  *
  */
 export const AuthenticatedApp = () => {
-  const [projectModalOpen, setProjectModalOpen] = useState(false)
+  const dispatch = useDispatch()
   return (
     <Container>
-      <PageHeader setProjectModalOpen={setProjectModalOpen} />
+      <PageHeader />
       <Main>
         <Router>
           <Routes>
             <Route
               path={'/projects'}
-              element={
-                <ProjectListScreen
-                  setProjectModalOpen={setProjectModalOpen}
-                />
-              }
+              element={<ProjectListScreen />}
             />
             <Route
               path={'/projects/:projectId/*'}
               element={<ProjectScreen />}
             />
-            <Route
-              index
-              element={
-                <ProjectListScreen
-                  setProjectModalOpen={setProjectModalOpen}
-                />
-              }
-            />
+            <Route index element={<ProjectListScreen />} />
           </Routes>
         </Router>
       </Main>
-      <ProjectModal
-        projectModalOpen={projectModalOpen}
-        onClose={() => setProjectModalOpen(false)}
-      />
+      <ProjectModal />
     </Container>
   )
 }
 
-const PageHeader = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void
-}) => {
+const PageHeader = () => {
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
@@ -81,9 +67,7 @@ const PageHeader = (props: {
             color={'reb(38,132,255)'}
           />
         </ButtonNoPadding>
-        <ProjectPopover
-          setProjectModalOpen={props.setProjectModalOpen}
-        />
+        <ProjectPopover />
         <span>用户</span>
       </HeaderLeft>
       <HeaderRight>

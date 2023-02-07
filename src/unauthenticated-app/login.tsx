@@ -1,8 +1,9 @@
-import { useAuth } from 'context/auth-context'
+import { AuthForm, useAuth } from 'context/auth-context'
 import React from 'react'
 import { Form, Input, Button } from 'antd'
 import { LongButton } from 'unauthenticated-app'
 import { useAsync } from 'utils/use-async'
+import { useDispatch } from 'react-redux'
 
 export const LoginScreen = ({
   onError,
@@ -14,10 +15,7 @@ export const LoginScreen = ({
     throwOnError: true,
   })
 
-  const handleSubmit = async (values: {
-    username: string
-    password: string
-  }) => {
+  const handleSubmit = async (values: AuthForm) => {
     try {
       await run(login(values))
     } catch (e: any) {

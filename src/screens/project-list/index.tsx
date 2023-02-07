@@ -9,10 +9,11 @@ import { useUsers } from 'utils/user'
 import { useProjectsSearchParams } from './util'
 import { Button } from 'antd/es/radio'
 import { Row } from 'components/lib'
+import { useDispatch } from 'react-redux'
+import { projectListActions } from './project-list.slice'
 
-export const ProjectListScreen = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void
-}) => {
+export const ProjectListScreen = () => {
+  const dispatch = useDispatch()
   const [param, setParam] = useProjectsSearchParams()
   const {
     isLoading,
@@ -29,7 +30,11 @@ export const ProjectListScreen = (props: {
     <Container>
       <Row between={true}>
         <h1>项目列表</h1>
-        <Button onClick={() => props.setProjectModalOpen(true)}>
+        <Button
+          onClick={() =>
+            dispatch(projectListActions.openProjectModal)
+          }
+        >
           创建项目
         </Button>
       </Row>
@@ -45,7 +50,6 @@ export const ProjectListScreen = (props: {
         </Typography.Text>
       ) : null}
       <List
-        setProjectModalOpen={props.setProjectModalOpen}
         refresh={retry}
         loading={isLoading}
         users={users || []}
