@@ -3,10 +3,10 @@ import { Divider, List, Popover, Typography } from 'antd'
 import { ButtonNoPadding } from 'components/lib'
 import React from 'react'
 import { useProjects } from 'utils/project'
+import { useProjectModal } from './util'
 
-export const ProjectPopover = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void
-}) => {
+export const ProjectPopover = () => {
+  const { open } = useProjectModal()
   const { data } = useProjects()
   const pinnedProjects = data?.filter((project) => project.pin)
   const content = (
@@ -25,10 +25,7 @@ export const ProjectPopover = (props: {
         ))}
       </List>
       <Divider />
-      <ButtonNoPadding
-        type="link"
-        onClick={() => props.setProjectModalOpen(true)}
-      >
+      <ButtonNoPadding type="link" onClick={open}>
         创建项目
       </ButtonNoPadding>
     </ContentContainer>

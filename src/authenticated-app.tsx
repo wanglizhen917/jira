@@ -31,47 +31,30 @@ import { ProjectPopover } from 'screens/project-list/project-popover'
  *
  */
 export const AuthenticatedApp = () => {
-  const [projectModalOpen, setProjectModalOpen] = useState(false)
   return (
     <Container>
-      <PageHeader setProjectModalOpen={setProjectModalOpen} />
-      <Main>
-        <Router>
+      <Router>
+        <PageHeader />
+        <Main>
           <Routes>
             <Route
               path={'/projects'}
-              element={
-                <ProjectListScreen
-                  setProjectModalOpen={setProjectModalOpen}
-                />
-              }
+              element={<ProjectListScreen />}
             />
             <Route
               path={'/projects/:projectId/*'}
               element={<ProjectScreen />}
             />
-            <Route
-              index
-              element={
-                <ProjectListScreen
-                  setProjectModalOpen={setProjectModalOpen}
-                />
-              }
-            />
+            <Route index element={<ProjectListScreen />} />
           </Routes>
-        </Router>
-      </Main>
-      <ProjectModal
-        projectModalOpen={projectModalOpen}
-        onClose={() => setProjectModalOpen(false)}
-      />
+        </Main>
+        <ProjectModal />
+      </Router>
     </Container>
   )
 }
 
-const PageHeader = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void
-}) => {
+const PageHeader = () => {
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
@@ -81,9 +64,7 @@ const PageHeader = (props: {
             color={'reb(38,132,255)'}
           />
         </ButtonNoPadding>
-        <ProjectPopover
-          setProjectModalOpen={props.setProjectModalOpen}
-        />
+        <ProjectPopover />
         <span>用户</span>
       </HeaderLeft>
       <HeaderRight>

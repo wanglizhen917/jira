@@ -1,11 +1,13 @@
 import { Dropdown, MenuProps, Table, TableProps } from 'antd'
 import dayjs from 'dayjs'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { User } from './search-panel'
 import { Link } from 'react-router-dom'
 import { Pin } from 'components/pin'
 import { useEditProject } from 'utils/project'
 import { ButtonNoPadding } from 'components/lib'
+import { GetRowKey } from 'antd/es/table/interface'
+import { useProjectModal } from './util'
 
 export interface Project {
   id: number
@@ -19,20 +21,15 @@ export interface Project {
 interface ListProps extends TableProps<Project> {
   users: User[]
   refresh?: () => void
-  setProjectModalOpen: (isOpen: boolean) => void
 }
 
-const getItems = ({
-  setProjectModalOpen,
-}: Pick<ListProps, 'setProjectModalOpen'>) => {
+const useItems = () => {
+  const { open } = useProjectModal()
   return [
     {
       key: '1',
       label: (
-        <ButtonNoPadding
-          type="link"
-          onClick={() => setProjectModalOpen(true)}
-        >
+        <ButtonNoPadding type="link" onClick={open}>
           编辑
         </ButtonNoPadding>
       ),
@@ -44,15 +41,19 @@ const getItems = ({
   ] as MenuProps['items']
 }
 
+const GetRowKeyOfProject: GetRowKey<Project> = (project) =>
+  project.id
+
 export const List = ({ users, ...props }: ListProps) => {
   const { mutate } = useEditProject()
   const pinProject = (id: number) => (pin: boolean) =>
     mutate({ id, pin }).then(props.refresh)
 
-  const items = getItems(props) || []
+  const items = useItems() || []
 
   return (
     <Table
+      rowKey={GetRowKeyOfProject}
       pagination={false}
       columns={[
         {

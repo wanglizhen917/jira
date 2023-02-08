@@ -2,7 +2,6 @@ import React, {
   createContext,
   ReactNode,
   useContext,
-  useState,
 } from 'react'
 import * as auth from 'auth-provider'
 import { User } from 'screens/project-list/search-panel'
